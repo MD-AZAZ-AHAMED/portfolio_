@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Azaz's AI Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #eee;
+      scroll-behavior: smooth;
+    }
+
+    /* Floating Chatbot Button */
+    #chatbotToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Chatbot Panel */
+    #chatbotPanel {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+      transform: scale(0);
+      opacity: 0;
+      z-index: 999;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #chatbotHeader {
+      background: #1e88e5;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    #chatbotBody {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .user-message,
+    .bot-message {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      background-color: #4caf50;
+      align-self: flex-end;
+      color: white;
+    }
+
+    .bot-message {
+      background-color: #424242;
+      color: white;
+    }
+
+    .typing span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin: 0 2px;
+      background: #ccc;
+      border-radius: 50%;
+      animation: bounce 1.3s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    #chatbotFooter {
+      display: flex;
+      padding: 10px;
+      background-color: #1c1c1c;
+    }
+
+    #userInput {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #sendMessage {
+      padding: 8px 12px;
+      background: #1e88e5;
+      color: white;
+      border: none;
+      margin-left: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Dummy sections for scrolling */
+    section {
+      padding: 100px;
+      margin: 30px;
+      background: #222;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="chatbotToggle">💬 Chat</button>
+
+  <div id="chatbotPanel">
+    <div id="chatbotHeader">
+      <span>Azaz's AI</span>
+      <button id="closeChatbot">✖</button>
+    </div>
+    <div id="chatbotBody"></div>
+    <div id="chatbotFooter">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button id="sendMessage">➤</button>
+    </div>
+  </div>
+
+  <!-- Dummy portfolio sections -->
+  <section id="projects"><h2>Projects Section</h2></section>
+  <section id="skills"><h2>Skills Section</h2></section>
+  <section id="contact"><h2>Contact Section</h2></section>
+
+  <!-- JavaScript -->
+  <script>
+    const chatbotToggle = document.getElementById("chatbotToggle");
+    const chatbotPanel = document.getElementById("chatbotPanel");
+    const closeChatbot = document.getElementById("closeChatbot");
+    const chatbotBody = document.getElementById("chatbotBody");
+    const userInput = document.getElementById("userInput");
+    const sendMessage = document.getElementById("sendMessage");
+
+    chatbotToggle?.addEventListener("click", () => {
+      gsap?.to(chatbotPanel, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+    });
+
+    closeChatbot?.addEventListener("click", () => {
+      gsap?.to(chatbotPanel, { scale: 0, opacity: 0, duration: 0.3 });
+    });
+
+    sendMessage?.addEventListener("click", sendUserMessage);
+    userInput?.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendUserMessage();
+      }
+    });
+
+    function sendUserMessage() {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+
+      appendMessage(msg, "user");
+      userInput.value = "";
+
+      const typingDots = document.createElement("div");
+      typingDots.className = "bot-message typing";
+      typingDots.innerHTML = "<span></span><span></span><span></span>";
+      chatbotBody.appendChild(typingDots);
+      chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+      fetchOpenAI(msg).then((reply) => {
+        chatbotBody.removeChild(typingDots);
+        appendMessage(reply, "bot");
+
+        const lower = reply.toLowerCase();
+        if (lower.includes("project")) scrollToSection("#projects");
+        if (lower.includes("skills")) scrollToSection("#skills");
+        if (lower.includes("contact")) scrollToSection("#contact");
+      }).catch(err => {
+        chatbotBody.removeChild(typingDots);
+        appendMessage("Oops, something went wrong with the AI.", "bot");
+        console.error(err);
+      });
+    }
+
+    function appendMessage(text, type) {
+      const msgEl = document.createElement("div");
+      msgEl.className = `${type}-message`;
+      msgEl.textContent = text;
+      chatbotBody.appendChild(msgEl);
+      chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    }
+
+    function scrollToSection(selector) {
+      const section = document.querySelector(selector);
+      section?.scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function fetchOpenAI(userInput) {
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer YOUR_OPENAI_API_KEY"
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [
+              {
+                role: "system",
+                content: "You are a helpful AI guide for Azaz's portfolio website. Respond in a friendly tone. If user asks to see projects, skills, or contact, suggest scrolling there."
+              },
+              {
+                role: "user",
+                content: userInput
+              }
+            ],
+            temperature: 0.6
+          })
+        });
+
+        if (!res.ok) throw new Error("API response was not OK");
+
+        const data = await res.json();
+        return data.choices?.[0]?.message?.content || "No response received.";
+      } catch (err) {
+        console.error("OpenAI Error:", err);
+        return "Sorry, I couldn’t connect to the AI core.";
+      }
+    }
+  </script>
+</body>
+</html>
