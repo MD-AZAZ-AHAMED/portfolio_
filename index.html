@@ -4,15 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MD.AZAZ AHAMED | AI Portfolio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
@@ -31,22 +27,27 @@
 
       body {
         color: #eee;
-        font-family: 'Poppins', sans-serif; /* Poppins for general text */
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
         margin: 0;
-        /* New body background from your provided code */
         background-image: repeating-linear-gradient(
             to right,
             #2d2a44 0 1px,
             transparent 2px 200px
-          ),   
+          ),
           repeating-linear-gradient(
             to bottom,
             #2d2a44 0 1px,
             transparent 2px 200px
           ),
           radial-gradient(at 50% 50%, #2d2a44, #1d1b34);
-        overflow-x: hidden; /* Keep this to prevent horizontal scroll */
-        scroll-behavior: smooth; /* Keep this for smooth scrolling */
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* Added for mobile menu: Prevent body scroll when menu is open */
+      body.no-scroll {
+        overflow: hidden;
       }
 
       ::-webkit-scrollbar {
@@ -66,103 +67,215 @@
         margin-bottom: 1rem;
         font-size: 2rem;
         color: #00ffe0;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
-      /* Top Banner */
+      /* --- Navigation Bar Styles --- */
       .top {
         display: flex;
         justify-content: flex-end;
-        gap: 12px;
-        padding: 12px 20px;
-        background: linear-gradient(to right, #000 0%, #010101 100%);
-        border-bottom: 2px solid #0f0;
-        font-family: 'Share Tech Mono', monospace; /* Keep this if you use Share Tech Mono for buttons */
-        position: relative;
+        gap: 20px;
+        padding: 12px 30px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(0, 255, 224, 0.15);
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
         z-index: 1000;
-        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        align-items: center;
       }
 
-      /* Flickering scanlines overlay */
-      .top::after {
+      .top::after,
+      .top::before {
+        display: none;
+      }
+
+      .banner-btn {
+        position: relative;
+        color: #00ffe0;
+        background: transparent;
+        border: 1px solid #00ffe0;
+        padding: 8px 18px;
+        font-size: 1rem;
+        text-decoration: none;
+        text-shadow: 0 0 6px #00ffe080;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        overflow: hidden;
+        border-radius: 5px;
+      }
+
+      .banner-btn:hover {
+        background: #00ffe0;
+        color: #1a1a2e;
+        box-shadow: 0 0 15px #00ffe0, 0 0 30px #00ffe0;
+        transform: translateY(-3px);
+      }
+
+      .banner-btn::after {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: repeating-linear-gradient(
-          to bottom,
-          rgba(0, 255, 0, 0.05),
-          rgba(0, 255, 0, 0.05) 1px,
-          transparent 1px,
-          transparent 4px
+        background: radial-gradient(
+          circle,
+          rgba(0, 255, 224, 0.3) 0%,
+          transparent 70%
         );
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
         pointer-events: none;
-        animation: flicker 1.5s infinite;
       }
 
-      @keyframes flicker {
-        0%,
-        100% {
-          opacity: 0.4;
-        }
-        50% {
-          opacity: 0.1;
-        }
+      .banner-btn:hover::after {
+        opacity: 1;
       }
 
-      .banner-btn {
-        position: relative;
-        color: #00ff00;
-        background: none;
-        border: 1px solid #00ff00;
-        padding: 6px 14px;
-        font-size: 0.9rem;
-        text-decoration: none;
-        text-shadow: 0 0 4px #0f0;
+      body {
+        margin-top: 65px;
+      }
+
+      /* Hamburger Menu Styles */
+      .hamburger-menu {
+        display: none; /* Hidden by default for desktop */
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 25px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        overflow: hidden;
+        z-index: 1001;
+        position: absolute; /* Changed from relative to absolute for precise positioning */
+        right: 30px;
+        top: 50%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust for vertical centering */
       }
 
-      .banner-btn:hover {
-        background: #00ff00;
-        color: #000;
-        box-shadow: 0 0 8px #00ff00, 0 0 20px #00ff00;
+      .hamburger-menu .bar {
+        width: 100%;
+        height: 3px;
+        background-color: #00ffe0;
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
       }
 
-      /* Blinking cursor on hover */
-      .banner-btn::after {
-        content: ' _';
-        animation: blink 0.9s infinite step-start;
-        opacity: 0.7;
+      .hamburger-menu.open .bar:nth-child(1) {
+        transform: translateY(11px) rotate(45deg);
       }
 
-      /* Particle background (optional subtle effect) */
-      .top::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(#00ff0044 1px, transparent 1px);
-        background-size: 20px 20px;
-        opacity: 0.06;
-        pointer-events: none;
+      .hamburger-menu.open .bar:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger-menu.open .bar:nth-child(3) {
+        transform: translateY(-11px) rotate(-45deg);
+      }
+
+      /* Mobile Navigation Overlay */
+      .mobile-nav-overlay {
+        display: flex; /* Changed to flex to ensure it can be shown */
+        position: fixed;
+        top: 0;
+        right: 0; /* Changed from left to right for sliding in from the right */
+        width: 50%; /* Make it half the screen width */
+        height: 100%;
+        background-color: rgba(26, 26, 46, 0.7); /* More transparent background */
+        backdrop-filter: blur(5px); /* Less blur effect */
+        -webkit-backdrop-filter: blur(5px); /* Less blur for webkit browsers */
+        z-index: 999;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%); /* Start off-screen to the right */
+      }
+
+      .mobile-nav-overlay.open {
+        transform: translateX(0); /* Slide in from the right */
+      }
+
+      .mobile-nav-overlay .banner-btn {
+        width: 80%;
+        text-align: center;
+        padding: 15px 0;
+        font-size: 1.2rem;
+      }
+
+      /* Media Queries for Responsiveness */
+      @media (max-width: 768px) {
+        .top {
+          justify-content: space-between;
+          padding: 12px 20px;
+        }
+
+        /* Crucial fix: Hide desktop buttons on mobile */
+        .top > .banner-btn {
+          display: none;
+        }
+
+        /* Crucial fix: Show hamburger menu on mobile */
+        .hamburger-menu {
+          display: flex;
+        }
+
+        /* Ensure mobile nav overlay starts hidden on load for mobile */
+        .mobile-nav-overlay:not(.open) {
+          display: none;
+        }
+
+        .hero-content {
+          max-width: 90%;
+          padding-left: 20px;
+        }
+
+        /* Adjusted for mobile visibility */
+        .animated-gradient-text {
+          font-size: 2.2em; /* Smaller font size for mobile */
+          word-break: break-word; /* Ensures long words wrap */
+          white-space: normal; /* Allows text to wrap naturally */
+          line-height: 1.2em; /* Adjust line height for better spacing */
+        }
+
+        .glow {
+          font-size: 2rem;
+        }
+
+        .about-wrapper {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .about-image {
+          margin-bottom: 1rem;
+        }
+
+        .project-card {
+          margin: 0 auto;
+          max-width: 350px;
+        }
       }
 
       /* Hero Section */
-.hero {
-  height: 100vh;
-  display: flex;
-  /* Removed flex-direction: column; to allow horizontal alignment */
-  justify-content: flex-start; /* Aligns content to the start (left) */
-  align-items: center; /* Keeps content vertically centered */
-  gap: 20px;
-  text-align: left; /* Aligns text within hero-content to the left */
-  margin-top: -70px; /* Adjust for fixed header */
-  position: relative;
-  overflow: hidden;
-  padding-left: 5%; /* Add some padding from the left edge */
-}
+      .hero {
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        padding-left: 5%;
+      }
 
       .hero #dotsCanvas {
         position: absolute;
@@ -170,24 +283,22 @@
         height: 100%;
         top: 0;
         left: 0;
-        pointer-events: none; /* Allows clicks to pass through to content below if any */
-        z-index: 0; /* Keep it behind content */
+        pointer-events: none;
+        z-index: 0;
       }
 
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 50%; /* You can adjust this as needed */
-  /* Remove any previous `margin: auto;` or `text-align: center;` if present */
-}
-
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 50%;
+      }
 
       /* Glitch Text (if you want to keep it) */
       .glitch-text {
-        font-family: 'Orbitron', sans-serif; /* Keep Orbitron for glitch */
+        font-family: 'Orbitron', sans-serif;
         font-size: 3.5rem;
         position: relative;
-        color: #00f0ff; /* Base color for glitch effect */
+        color: #00f0ff;
         text-shadow: 0 0 2px #00f0ff;
       }
 
@@ -240,8 +351,8 @@
 
       /* Animated Gradient Text (new style) */
       .animated-gradient-text {
-        --to: left; /* Default direction */
-        font-size: 4em; /* Adjust as needed, was 3.5rem for .glitch-text */
+        --to: left;
+        font-size: 4em;
         font-weight: bold;
         background-image: linear-gradient(
           to var(--to),
@@ -253,20 +364,15 @@
         -webkit-text-fill-color: transparent;
         text-transform: uppercase;
         line-height: 1em;
-        font-family: 'Orbitron', sans-serif; /* Apply Orbitron font */
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
-
-      /* Optional: if you want to combine glitch and gradient,
-         the gradient will likely override the glitch colors.
-         You might need to adjust the glitch `color` properties.
-         For simplicity, I'd recommend choosing one dominant style for the h1.
-      */
 
       .hero-animation img {
         width: 400px;
         animation: rotatePlanet 10s linear infinite;
-        position: relative; /* Keep relative */
-        z-index: 1; /* Adjust z-index to layer over canvas if desired */
+        position: relative;
+        z-index: 1;
       }
       @keyframes rotatePlanet {
         from {
@@ -301,6 +407,8 @@
         font-size: 3rem;
         color: #e8ddddb5;
         text-shadow: 0 0 10px #3fa094, 0 0 20px #5e8d88;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .animated-text {
@@ -308,6 +416,8 @@
         margin-top: 1rem;
         color: #fff;
         opacity: 0.8;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       /* About */
@@ -326,6 +436,8 @@
         margin-bottom: 2rem;
         font-size: 2rem;
         color: #00ffe0;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .about-wrapper {
@@ -347,6 +459,7 @@
 
       .about-text {
         max-width: 600px;
+        /* Changed font to Poppins */
         font-family: 'Poppins', sans-serif;
         font-size: 1rem;
         font-weight: 300;
@@ -400,6 +513,8 @@
         font-size: 2rem;
         color: #78b39c;
         margin-bottom: 2rem;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .skills-list .skill {
@@ -411,6 +526,8 @@
         margin-bottom: 0.4rem;
         font-weight: 500;
         color: #8fffd4;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .bar {
@@ -419,21 +536,6 @@
         border-radius: 10px;
         background: linear-gradient(90deg, #8fffd4, #6df2c3);
         box-shadow: 0 0 10px rgba(140, 255, 212, 0.5);
-      }
-
-      /* Skill bar initial widths (GSAP animates these) */
-      /* These rules are largely overridden by GSAP but provide a fallback */
-      .bar.js::after {
-        width: 95%;
-      }
-      .bar.html::after {
-        width: 95%;
-      }
-      .bar.gsap::after {
-        width: 80%;
-      }
-      .bar.api::after {
-        width: 75%;
       }
 
       @keyframes growBar {
@@ -466,6 +568,8 @@
         background: #111;
         color: #fff;
         resize: none;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .contact button {
@@ -477,14 +581,14 @@
         cursor: pointer;
         color: #000;
         transition: background 0.3s ease;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .contact button:hover {
         background: #ff00c8;
         color: #fff;
       }
-
-      /* Chatbot Button */
 
       .animated-text {
         font-size: 1.4rem;
@@ -496,6 +600,8 @@
         align-items: center;
         gap: 5px;
         height: 40px;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .cursor {
@@ -513,8 +619,6 @@
           opacity: 0;
         }
       }
-      /* Chatbot Panel */
-
 
       .about-containers {
         display: grid;
@@ -552,9 +656,6 @@
         box-shadow: 0 0 20px #00ffe0;
       }
 
-      /* Typing dots */
-
-
       .btn {
         padding: 0.6rem 1.4rem;
         font-size: 0.95rem;
@@ -569,6 +670,8 @@
         margin: 0.5rem;
         box-shadow: 0 0 12px rgba(0, 255, 224, 0.3);
         text-shadow: 0 0 4px #00ffe0;
+        /* Changed font to Poppins */
+        font-family: 'Poppins', sans-serif;
       }
 
       .btn:hover {
@@ -656,6 +759,24 @@
   </head>
   <body>
     <div class="top">
+      <a href="thesis.html" class="banner-btn">Thesis</a>
+      <a href="education.html" class="banner-btn">Education</a>
+      <a href="banners.html" class="banner-btn">🎬 My Banners</a>
+      <a href="assets/resume-example.pdf" class="banner-btn"
+        >> ./download-cv.</a
+      >
+      <a href="https://www.linkedin.com/in/md-azaz-ahamed-/" class="banner-btn"
+        >Hire ME</a
+      >
+
+      <div class="hamburger-menu" id="hamburgerMenu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+
+    <div class="mobile-nav-overlay" id="mobileNavOverlay">
       <a href="thesis.html" class="banner-btn">Thesis</a>
       <a href="education.html" class="banner-btn">Education</a>
       <a href="banners.html" class="banner-btn">🎬 My Banners</a>
@@ -777,7 +898,7 @@
               >
                 GitHub
               </button>
-              </div>
+            </div>
           </div>
           <div class="details-container color-container">
             <div class="article-container">
@@ -829,8 +950,6 @@
       </form>
     </section>
 
- 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
@@ -861,6 +980,26 @@
                 ease: 'power2.in',
               });
             },
+          });
+        });
+
+        // Hamburger Menu Logic
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+        const mobileNavLinks = mobileNavOverlay.querySelectorAll('.banner-btn');
+
+        hamburgerMenu.addEventListener('click', () => {
+          hamburgerMenu.classList.toggle('open');
+          mobileNavOverlay.classList.toggle('open');
+          document.body.classList.toggle('no-scroll'); // Optional: disable body scroll when menu is open
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileNavLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            hamburgerMenu.classList.remove('open');
+            mobileNavOverlay.classList.remove('open');
+            document.body.classList.remove('no-scroll');
           });
         });
       });
@@ -901,22 +1040,21 @@
     </script>
 
     <script>
-      let banner = document.querySelector('.hero'); /* Changed to .hero */
+      let banner = document.querySelector('.hero');
       let canvas = document.getElementById('dotsCanvas');
-      // Ensure canvas dimensions are set correctly on load and resize
       const setCanvasDimensions = () => {
         if (banner && canvas) {
           canvas.width = banner.offsetWidth;
           canvas.height = banner.offsetHeight;
         }
       };
-      setCanvasDimensions(); // Set initial dimensions
+      setCanvasDimensions();
       const ctx = canvas.getContext('2d');
-      let dots = []; /* Changed to let for re-assignment on resize */
+      let dots = [];
       const arrayColors = ['#eee', '#545454', '#596d91', '#bb5a68', '#696541'];
 
       const createDots = () => {
-        dots = []; // Clear existing dots on resize
+        dots = [];
         for (let index = 0; index < 50; index++) {
           dots.push({
             x: Math.floor(Math.random() * canvas.width),
@@ -927,8 +1065,7 @@
         }
       };
 
-      createDots(); // Initial dot creation
-
+      createDots();
       const drawDots = () => {
         dots.forEach((dot) => {
           ctx.fillStyle = dot.color;
@@ -965,9 +1102,9 @@
       });
 
       window.addEventListener('resize', () => {
-        setCanvasDimensions(); // Update canvas size
+        setCanvasDimensions();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        createDots(); // Recreate dots for new size
+        createDots();
         drawDots();
       });
     </script>
